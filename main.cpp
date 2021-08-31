@@ -36,6 +36,12 @@ int main()
   
   Brainz::Basic b;
 
-  b.Generate(2, {1,3}, 2, 3);
+  b.Generate(3, {2,3,2}, 2, 3);
+
+  auto j = b.Save();
+
+  //auto m = b.Run({3,6,-2});
+
+  std::cout<<j<<std::endl;
 
 }

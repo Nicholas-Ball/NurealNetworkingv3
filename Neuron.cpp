@@ -43,9 +43,8 @@ void Neuron::Compute(std::vector<double> inputs)
     //loop through inputs
     for(int i = 0; i != this->Inputs.size();i++)
     {
-      //get output of pervious neuron with neuron number
-       std::vector<Neuron*> temp = *this->NetworkPointer;
-       double n = temp[i]->GetOutput();
+      //get output of pervious neuron with neuron number  
+       double n = this->NetworkPointer[i]->GetOutput();
 
       //multiply it by it's weight and add to output
       this->Output += (this->Weights[i] * n);
@@ -77,9 +76,13 @@ void Neuron::Compute(std::vector<double> inputs)
   
 };
 
-//Add Neuron to neurons to use in computation
+//Add Neuron to neurons to use in computation and make random weights
 void Neuron::AddInputNeuron(int n)
 {
+  //generate random weight and add to weights
+  this->Weights.push_back(this->Rand(-10, -20));
+
+  //add input neuron to inputs array
   this->Inputs.push_back(n);
 };
 
@@ -132,7 +135,7 @@ void Neuron::SetName(std::string name)
 //set network pointer
 void Neuron::SetPointer(std::vector<Neuron*> net)
 {
-  this->NetworkPointer = &net;
+  this->NetworkPointer = net;
 };
 
 //save neuron
@@ -158,6 +161,9 @@ nlohmann::json Neuron::Save()
 
   //save neuron name
   j["Name"] = this->name;
+
+  //load is Output bool
+  j["IsOutput"] = this->IsOutputNeuron;
 
 
 
@@ -186,8 +192,23 @@ void Neuron::Load(nlohmann::json j,std::vector<int> inputs)
   //load neuron name
   this->name = j["Name"];
 
+  //load is Output bool
+  this->IsOutputNeuron = j["IsOutput"];
+
 
 };
+
+//Accecor to check if neuron is an output neuron
+bool Neuron::IsOutput()
+{
+  return this->IsOutputNeuron;
+};
+
+//Set neuron as output neuron
+void Neuron::SetAsOutput()
+{
+  this->IsOutputNeuron = true;
+}
 
 Neuron::~Neuron(){
 

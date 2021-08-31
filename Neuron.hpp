@@ -22,14 +22,16 @@ class Neuron{
     std::vector<double> Weights;
     //input neuron names for computation
     std::vector<int> Inputs;
-    //Is it an input bool
+    //Is it an input Neuron
     bool IsInputNeuron;
+    //Is it an Output Neuron
+    bool IsOutputNeuron;
     //neuron activation type
     int type;
     //generate random seed
     double seed = 0;
     //pointer to network
-    std::vector<Neuron*> *NetworkPointer;
+    std::vector<Neuron*> NetworkPointer;
 
 
   public:
@@ -68,6 +70,12 @@ class Neuron{
 
     //Load json data to neuron
     void Load(nlohmann::json j,std::vector<int> inputs);
+
+    //Accecor to check if neuron is an output neuron
+    bool IsOutput();
+
+    //Set neuron as output neuron
+    void SetAsOutput();
 
     //destruct
     ~Neuron();
