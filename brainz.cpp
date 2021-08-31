@@ -1,10 +1,10 @@
 #include "brainz.hpp"
 
-
-
 //Generate network and save to self
-void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type,int numberofinputs)
+void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type,int numberofinputs,std::vector<std::string> OutputNames)
 {
+  //Set outputnames vector array
+  this->names = OutputNames;
   //loop through columns and make a neurons
   for (int c = 0;c != Columns;c++)
   {
@@ -16,7 +16,6 @@ void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type
 
       //Set neuron types
       n->SetNeuronType(type);
-
 
       //if on first column, set as input layer
       if (c == 0)
@@ -42,16 +41,11 @@ void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type
         }
       }
 
-
       //set pointer for neuron
       n->SetPointer(this->network);
 
-
-
       //add neuron to network
       this->network.push_back(n);
-
-
     }
 
   }
@@ -64,6 +58,9 @@ std::map<std::string,double> Brainz::Basic::Run(std::vector<double> inp)
  //declare output var
  std::map<std::string,double> Output; 
 
+ //Output counter
+ int counter = 0;
+
  //loop through network and give input vars
  for (int i = 0;i != this->network.size();i++)
  {
@@ -73,7 +70,11 @@ std::map<std::string,double> Brainz::Basic::Run(std::vector<double> inp)
    //if neuron is output neuron, put output into map
    if (this->network[i]->IsOutput())
    {
-     Output["Output"] = this->network[i]->GetOutput();
+     //put output into map
+     Output[this->names[counter]] = this->network[i]->GetOutput();
+
+     //count up for output name
+     counter++;
    };
  }
 
@@ -103,10 +104,41 @@ nlohmann::json Brainz::Basic::Save()
   //convert json vector array into json as a list of neurons
   j["Neurons"] = tj; 
 
+  //save names of outputs
+  j["OutputNames"] = this->names;
+
   //return json
   return j;
 }
 
+void Brainz::Basic::Load(nlohmann::json j)
+{
+  //netowrk var to send to self
+  std::vector<Neuron *> net;
+
+  //make json to array of neruon data
+  std::vector<nlohmann::json> tj = j["Neurons"];
+
+  //loop through json vector array and load neurons to network
+  for(int i = 0;i != tj.size();i++)
+  {
+    //make new nureon pointer
+    Neuron* n = new Neuron;
+
+    //set network pointer
+    n->SetPointer(this->network);
+
+    //load data to neuron
+    n->Load(tj[i]);
+
+    //load neuron into network
+    this->network.push_back(n);
+
+
+  };
+
+  this->names = j["OutputNames"].get<std::vector<std::string>>();
+}
 
 Brainz::~Brainz(){
 

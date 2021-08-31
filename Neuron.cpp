@@ -44,7 +44,7 @@ void Neuron::Compute(std::vector<double> inputs)
     for(int i = 0; i != this->Inputs.size();i++)
     {
       //get output of pervious neuron with neuron number  
-       double n = this->NetworkPointer[i]->GetOutput();
+      double n = this->NetworkPointer[this->Inputs[i]-1]->GetOutput();
 
       //multiply it by it's weight and add to output
       this->Output += (this->Weights[i] * n);
@@ -67,13 +67,6 @@ void Neuron::Compute(std::vector<double> inputs)
 
   //add bias,Compute neuron, and set as output
   this->Output = Afuncs[type](this->Output + this->Bias);
-
-  
-
-
-  std::cout<<this->Output<<std::endl;
-
-  
 };
 
 //Add Neuron to neurons to use in computation and make random weights
@@ -172,7 +165,7 @@ nlohmann::json Neuron::Save()
 };
 
 //Load json data to neuron
-void Neuron::Load(nlohmann::json j,std::vector<int> inputs)
+void Neuron::Load(nlohmann::json j)
 {
   //load bias
   this->Bias = j["Bias"];
@@ -181,7 +174,7 @@ void Neuron::Load(nlohmann::json j,std::vector<int> inputs)
   this->Weights = j["Weights"].get<std::vector<double>>();
 
   //load inputs
-  this->Inputs = inputs;
+  this->Inputs = j["Inputs"].get<std::vector<int>>();
 
   //load neuron type
   this->type = j["Type"];
@@ -194,7 +187,6 @@ void Neuron::Load(nlohmann::json j,std::vector<int> inputs)
 
   //load is Output bool
   this->IsOutputNeuron = j["IsOutput"];
-
 
 };
 

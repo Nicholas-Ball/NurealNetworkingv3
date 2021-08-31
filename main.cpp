@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <map>
 #include "brainz.hpp"
 
 int main() 
@@ -35,13 +37,20 @@ int main()
   std::cout<<j<<std::endl;*/
   
   Brainz::Basic b;
+  Brainz::Basic ba;
 
-  b.Generate(3, {2,3,2}, 2, 3);
+  b.Generate(2, {2,3}, 2, 3,{"output1","output2","output3"});
 
   auto j = b.Save();
 
-  //auto m = b.Run({3,6,-2});
 
-  std::cout<<j<<std::endl;
+  auto m = b.Run({3,6,-2});
+
+  ba.Load(j);
+
+  auto ma = ba.Run({3,6,-2});
+
+  std::cout<<ma["output1"] <<std::endl;
+  std::cout<<m["output1"]<<std::endl;
 
 }

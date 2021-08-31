@@ -69,7 +69,7 @@ class Neuron{
     nlohmann::json Save();
 
     //Load json data to neuron
-    void Load(nlohmann::json j,std::vector<int> inputs);
+    void Load(nlohmann::json j);
 
     //Accecor to check if neuron is an output neuron
     bool IsOutput();
