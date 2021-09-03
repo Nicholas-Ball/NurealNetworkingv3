@@ -15,6 +15,9 @@ class Brainz{
 
         //output names array
         std::vector<std::string> names;
+
+        //randomizer seed
+        int seed;
       public:
         //Generate network and save to self
         void Generate(int Columns, std::vector<int> ColumnMatrix,int type,int numberofinputs,std::vector<std::string> OutputNames);
@@ -27,6 +30,16 @@ class Brainz{
 
         //Load network with Json
         void Load(nlohmann::json j);
+
+        //natrual selection based training
+        Brainz::Basic NatrualSelection(Brainz::Basic BaseNetwork,int NumCreatures,int NumGenerations,double MutationChance,double SurvivalRate,nlohmann::json InputsWithExpectedOuputs);
+
+
+        //returns size of network
+        int GetSize();
+
+        //get a neuron
+        Neuron* GetNeuron(int num);
 
         //Deconstructor
         ~Basic();

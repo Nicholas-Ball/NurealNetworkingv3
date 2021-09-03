@@ -77,6 +77,12 @@ class Neuron{
     //Set neuron as output neuron
     void SetAsOutput();
 
+    //Randomize 
+    void RandomizeWeight(int seed, int WeightNum);
+
+    //get number of weights in neuron
+    int GetNumWeights();
+
     //destruct
     ~Neuron();
 

@@ -43,14 +43,24 @@ int main()
 
   auto j = b.Save();
 
-
   auto m = b.Run({3,6,-2});
 
   ba.Load(j);
 
   auto ma = ba.Run({3,6,-2});
 
-  std::cout<<ma["output1"] <<std::endl;
-  std::cout<<m["output1"]<<std::endl;
+  nlohmann::json td;
 
+  std::vector<std::vector<double>> inputs = {{3,6,-2},{5,-8,4}};
+
+  std::vector<std::vector<double>> outputs = {{2,7,-2},{9,4,-1}};
+
+  td["Inputs"] = inputs;
+  td["Outputs"] = outputs;
+
+  ba = ba.NatrualSelection(ba, 10, 500, 0.1, 0.5, td);
+
+  j = ba.Save();
+
+  std::cout<<j<<std::endl;
 }

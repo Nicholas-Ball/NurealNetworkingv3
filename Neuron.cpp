@@ -73,7 +73,13 @@ void Neuron::Compute(std::vector<double> inputs)
 void Neuron::AddInputNeuron(int n)
 {
   //generate random weight and add to weights
-  this->Weights.push_back(this->Rand(-10, -20));
+  this->Weights.push_back(this->Rand(-10, 20));
+
+  //get size of the weight array for more random
+  int s = this->Weights.size();
+
+  //randomize the weight more
+  this->RandomizeWeight(this->seed, s-1);
 
   //add input neuron to inputs array
   this->Inputs.push_back(n);
@@ -158,10 +164,7 @@ nlohmann::json Neuron::Save()
   //load is Output bool
   j["IsOutput"] = this->IsOutputNeuron;
 
-
-
   return j;
-
 };
 
 //Load json data to neuron
@@ -200,6 +203,22 @@ bool Neuron::IsOutput()
 void Neuron::SetAsOutput()
 {
   this->IsOutputNeuron = true;
+}
+
+//Randimize a weight for this neuron
+void Neuron::RandomizeWeight(int seed,int WeightNum)
+{
+  //set a new seed
+  srand(seed);
+
+  //add random number to weight
+  this->Weights[WeightNum] += (double) ((rand() % 4) - 2) + (float)(rand() % 30) / 100;
+};
+
+//returns the amount of weights 
+int Neuron::GetNumWeights()
+{
+  return this->Weights.size();
 }
 
 Neuron::~Neuron(){
