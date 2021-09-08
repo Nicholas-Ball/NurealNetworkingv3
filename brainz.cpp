@@ -246,50 +246,12 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
   //get json of base network and use to generate networks
   auto bn = BaseNetwork.Save(); 
-
-  //make creatures and add them creatures array
-  for(int c = 1; c != NumCreatures;c++)
-  {
-    //make a new network
-    Brainz::Basic temp;
-
-    //load new network with base network
-    temp.Load(bn);
-
-    //get size of network
-    int s = temp.GetSize();
-
-    //load seed
-    srand(this->seed);
-
-    //get random number within the size of the network
-    int d = rand() % (s-1);
-
-    //set a new seed
-    this->seed = (rand() % 500000000) + d;
-
-    //get neuron from network
-    Neuron* n = temp.GetNeuron(d);
-
-    //get amount of weights in neuron
-    int s2 = n->GetNumWeights();
-
-    //pick a random weight
-    d = rand() % (s2-1);
-
-    //randomize that weight
-    n->RandomizeWeight(this->seed, d);
-
-    //add new creature to creature array
-    Creatures.push_back(temp);
-  }
-
-  //Run training
-  //-----------------------------
   
   //error array
   std::vector<double> Errors;
 
+  //Run training
+  //-----------------------------
 
   //get input and set as a var
   auto inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
@@ -300,99 +262,14 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   //loop through Generations
   for(int g = 0; g != NumGenerations; g++)
   {
-    //loop through creatures, run them then calculate errors
-    for(int c = 0; c != NumCreatures;c++)
-    {
-
-      //loop through input data
-      for(int i = 0;i != inp.size();i++)
-      {
-        //run cretures
-        auto s = Creatures[c].Run(inp[i]);
-
-        //loop through inputs and calculate error
-        for(int n = 0; n != this->names.size();n++)
-        {
-          //get name of output
-          auto p = this->names[n];
-
-          //if first passthrough with error calculate and add to error array, else just add to exiting error
-          if(c != Errors.size()-1)
-          {
-            //calculate error and add to errors array
-            Errors.push_back((qm.ABS((s[p] - out[i][n]))));
-          }else{
-            //calculate error and add to existing error
-            Errors[c] += (qm.ABS((s[p] - out[i][n])));
-
-          }
-        }
-      }
-    }
-    //flip vector to error returns creture
-    std::map<double,int> fe;
-
-    //survival counter
-    int sc = 0;
-
-    //errors without duplicates
-    std::vector<double> NDE;
-
-    for(int i = 0; i != Errors.size();i++)
-    {
-      //if unique error, add to list (removes duplicated errors)
-      if (fe.find(Errors[i]) == fe.end() and sc != NumCreatures*SurvivalRate)
-      {
-        fe[Errors[i]] = i;
-        sc++;
-      }
-
-      //remove duplicated errors
-      if (!contains(NDE,Errors[i]))
-      {
-        NDE.push_back(Errors[i]);
-      }
-
-    }
-
-    //sort errors from lowest error to highest error
-    auto m = Mergesort(NDE);
-
-    std::cout<<m.size()<<std::endl;
-
-    //temparary creature array
-    std::vector<Brainz::Basic> tempc;
-
-    //rearrange creatures from best to worst in creature array. Kill cretures that have same error 
-    for(int c = 0; c != Creatures.size();c++)
-    {
-      if (contains(m,Errors[c]))
-      {
-        tempc.push_back(Creatures[c]);
-      }
-    }
-
-
-    Errors = {};
-
-    //set new creatures 
-    Creatures = tempc;
-
-    //reset errors
-    std::vector<double> ts;
-    Errors = ts; 
-
-    //generate new creatures
-    for(int g = Creatures.size();g != NumCreatures;g++)
-    {
-      //loop through survived creatures to generate more
-      for(int i = 0; i != tempc.size();i++)
-      {
-        //make a new network
+    //make creatures, run them, calculate error, and then add them to creature array
+    for(int c = Creatures.size(); c != NumCreatures;c++)
+   {
+      //make a new network
       Brainz::Basic temp;
 
       //load new network with base network
-      temp.Load(tempc[i].Save());
+      temp.Load(bn);
 
       //get size of network
       int s = temp.GetSize();
@@ -401,27 +278,79 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
       srand(this->seed);
 
       //get random number within the size of the network
-      int d = rand() % (s-1);
+     int d = rand() % (s-1);
 
-      //set a new seed
-      this->seed = (rand() % 500000000) + d;
+     //set a new seed
+     this->seed = (rand() % 500000000) + d;
 
-      //get neuron from network
-      Neuron* n = temp.GetNeuron(d);
+     //get neuron from network
+     Neuron* n = temp.GetNeuron(d);
 
       //get amount of weights in neuron
       int s2 = n->GetNumWeights();
 
-      //pick a random weight
-      d = rand() % (s2-1);
+     //pick a random weight
+     d = rand() % (s2-1);
 
       //randomize that weight
-      n->RandomizeWeight(this->seed, d);
+     n->RandomizeWeight(this->seed, d);
 
-      //add new creature to creature array
-      Creatures.push_back(temp);
+      //loop through inputs
+      for (int i = 0; i != inp.size();i++){
+        //run creature 
+        auto g = temp.Run(inp[i]);
+        
+        //map iterator
+        std::map<std::string, double>::iterator it;
+
+        int r = 0;
+
+        //loop through results and calculate error
+        for (it = g.begin(); it != g.end(); it++)
+        {
+          //calculate error
+          //Y = |Expected - result|
+          double te = qm.ABS(out[i][r] - g[it->first]);
+
+          //if on first input, make new element to error array
+          if (i == 1){
+            Errors.push_back(te);
+          }else{
+            Errors[c] += te;
+          }
+          r++;
+        }
       }
+      //add new creature to creature array
+     Creatures.push_back(temp);
+  }
+
+  //flip errors and creature number and remove duplicates
+  std::map<double,int> ErrorsFlipped;
+
+  std::vector<double> ErrorsFlippedDoublesOnly;
+
+  for(int e = 0; e != Errors.size();e++)
+  {
+    //if error is unique, add it to the array and the map to be compared
+    if (ErrorsFlipped.find(Errors[e]) == ErrorsFlipped.end())
+    {
+      ErrorsFlipped[Errors[e]] = e;
+      ErrorsFlippedDoublesOnly.push_back(Errors[e]);
     }
+  }
+
+  //sort ErrorsFlippedDoublesOnly
+  ErrorsFlippedDoublesOnly = Mergesort(ErrorsFlippedDoublesOnly);
+
+  //temp creature array
+  std::vector<Brainz::Basic> tempC;
+
+  //loop through only the cretures and kill all creatures that couldn't survive
+  
+
+
+
 
   }
 
