@@ -346,12 +346,12 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   //temp creature array
   std::vector<Brainz::Basic> tempC;
 
-  //loop through only the cretures and kill all creatures that couldn't survive
-  
-
-
-
-
+  //loop through the survived creatures and add them to new creture list as survived
+    for(int c = 0; c != ErrorsFlippedDoublesOnly.size() and c <= NumCreatures * SurvivalRate;c++)
+    {
+      //set survived creature
+      tempC[c] = Creatures[ErrorsFlipped[ErrorsFlippedDoublesOnly[c]]];
+    }
   }
 
   //return best network

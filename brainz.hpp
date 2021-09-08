@@ -3,6 +3,9 @@
 #include "Neuron.hpp"
 #include "nlohmann/json.hpp"
 
+#ifndef BRAINZ
+#define BRAINZ
+
 
 //make brainz class 
 class Brainz{
@@ -49,4 +52,4 @@ class Brainz{
     ~Brainz();
 };
 
-
+#endif
