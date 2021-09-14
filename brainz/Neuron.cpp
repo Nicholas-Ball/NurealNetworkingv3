@@ -212,7 +212,7 @@ void Neuron::SetAsOutput()
   this->IsOutputNeuron = true;
 }
 
-//Randimize a weight for this neuron
+//Randomize a weight for this neuron
 void Neuron::RandomizeWeight(int seed,int WeightNum)
 {
   //set a new seed

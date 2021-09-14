@@ -63,6 +63,9 @@ class Brainz{
         double memory;
      public:
 
+     //constructor
+      LSTM(int SeedOffset = 0);
+
       //Generate LSTM
       void Generate();
 
@@ -75,7 +78,8 @@ class Brainz{
       //load lstm
       void Load(nlohmann::json);
 
-      //natural selection training
+      //mutate lstm
+      nlohmann::json Mutate();
 
 
    };

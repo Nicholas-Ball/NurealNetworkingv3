@@ -424,40 +424,57 @@ void Brainz::LSTM::Generate()
 
   temp->RandomizeWeight(this->seed,0);
 
-  //make copy of temp
-  Neuron *sig1 = temp;
+  //make copy of temp and load into sig1
+  auto j = temp->Save();
+  Neuron *sig1 = new Neuron;
+  sig1->Load(j);
 
   //set sigmoid 1 neuron
   this->network["Sig1"] = sig1;
 
   temp->RandomizeWeight(this->seed,0);
 
-  //make copy of temp
-  Neuron *sig2 = temp;
+
+  //make copy of temp and load into sig2
+  j = temp->Save();
+  Neuron *sig2 = new Neuron;
+  sig2->Load(j);
 
   //set sigmoid 2 neuron
   this->network["Sig2"] = sig2;
 
   temp->RandomizeWeight(this->seed,0);
 
-  //make copy of temp
-  Neuron *sig3 = temp;
+  //make copy of temp and load into sig3
+  j = temp->Save();
+  Neuron *sig3 = new Neuron;
+  sig3->Load(j);
 
   //set sigmoid 3 neuron
   this->network["Sig3"] = sig3;
 
-  //set type as tanh for tanh neuron
+  //set type as tanh for tanh neurons
   temp->SetNeuronType(1);
 
+  temp->RandomizeWeight(this->seed,0);
 
-  //make copy of temp
-  Neuron *tanh = temp;
+  //make copy of temp and load into Tanh1
+  j = temp->Save();
+  Neuron *Tanh1 = new Neuron;
+  Tanh1->Load(j);
+
+  temp->RandomizeWeight(this->seed,0);
+
+  //make copy of temp and load into sig1
+  j = temp->Save();
+  Neuron *Tanh2 = new Neuron;
+  Tanh2->Load(j);
 
   //set tanh neurons
-  this->network["Tanh1"] = tanh;
+  this->network["Tanh1"] = Tanh1;
 
   //set tanh neurons
-  this->network["Tanh2"] = tanh;
+  this->network["Tanh2"] = Tanh2;
   
 }
 
@@ -560,6 +577,37 @@ void Brainz::LSTM::Load(nlohmann::json j)
   Tanh2->Load(j["Tanh2"]);
   this->network["Tanh2"] = Tanh2; 
 }
+
+nlohmann::json Brainz::LSTM::Mutate()
+{
+  nlohmann::json j;
+  
+  //random mutate list
+  std::string list[5] = {"Sig1","Sig2","Sig3","Tanh1","Tanh2"};
+
+  //pick from list what to mutate
+  srand(this->seed);
+  this->seed = rand() % 5;
+  int r = rand() % 6000;
+
+  //mutate
+  this->network[list[this->seed]]->RandomizeWeight(r, 0);
+
+  j = this->Save();
+
+  return j;
+}
+
+
+//constructor
+Brainz::LSTM::LSTM(int Seedoffset)
+{
+ //set seed
+ const auto p1 = std::chrono::system_clock::now();
+ int unix = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
+  this->seed = unix + Seedoffset;
+}
+
 
 
 Brainz::~Brainz(){

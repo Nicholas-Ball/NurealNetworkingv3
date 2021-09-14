@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "brainz.hpp"
+#include "brainz/brainz.hpp"
 
 int main() 
 { 
@@ -10,10 +10,9 @@ int main()
 
   b.Generate();
   b.Run(3);
-  auto base = b.Save();
+  auto j1 = b.Save();
+  auto j = b.Mutate();
 
-
-  ba.Load(base);
-
-  std::cout<<(ba.Save() == base)<<std::endl;
+  std::cout<<j1<<"\n\n"<<std::endl;
+  std::cout<<j<<std::endl;
 }
