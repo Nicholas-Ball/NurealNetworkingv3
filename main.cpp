@@ -4,63 +4,16 @@
 #include "brainz.hpp"
 
 int main() 
-{
-  /*
-  //declare neuron var
-  Neuron n;
+{ 
+  Brainz::LSTM b;
+  Brainz::LSTM ba;
 
-  //set as input neuron
-  n.SetAsFirstNeuron(3);
+  b.Generate();
+  b.Run(3);
+  auto base = b.Save();
 
-  //set type of activation function
-  n.SetNeuronType(3);
 
-  //dummy input values
-  std::vector<double> inp = {3,-5,0};
+  ba.Load(base);
 
-  //neuron compute data
-  n.Compute(inp);
-
-  //save neuron
-  auto j = n.Save();
-
-  //create new neuron
-  Neuron nn;
-
-  //load neuron data
-  nn.Load(j,{});
-
-  //run new neuron
-  nn.Compute(inp);
-
-  //show json of the neurons
-  std::cout<<j<<std::endl;*/
-  
-  Brainz::Basic b;
-  Brainz::Basic ba;
-
-  b.Generate(2, {2,3}, 2, 3,{"output1","output2","output3"});
-
-  auto j = b.Save();
-
-  auto m = b.Run({3,6,-2});
-
-  ba.Load(j);
-
-  auto ma = ba.Run({3,6,-2});
-
-  nlohmann::json td;
-
-  std::vector<std::vector<double>> inputs = {{3,6,-2},{5,-8,4}};
-
-  std::vector<std::vector<double>> outputs = {{2,7,-2},{9,4,-1}};
-
-  td["Inputs"] = inputs;
-  td["Outputs"] = outputs;
-
-  ba = ba.NatrualSelection(ba, 10, 500, 0.1, 0.5, td);
-
-  j = ba.Save();
-
-  std::cout<<j<<std::endl;
+  std::cout<<(ba.Save() == base)<<std::endl;
 }

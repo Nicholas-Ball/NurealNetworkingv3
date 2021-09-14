@@ -242,10 +242,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   //-------------------------
 
   //add initial creature to creature array
-  Creatures.push_back(BaseNetwork);
-
-  //get json of base network and use to generate networks
-  auto bn = BaseNetwork.Save(); 
+  Creatures.push_back(BaseNetwork); 
   
   //error array
   std::vector<double> Errors;
@@ -262,11 +259,27 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   //loop through Generations
   for(int g = 0; g != NumGenerations; g++)
   {
+    //get total number of surivived creatures
+    int SurNum = Creatures.size();
+
+    //save counter
+    int sc = 0;
+
     //make creatures, run them, calculate error, and then add them to creature array
-    for(int c = Creatures.size(); c != NumCreatures;c++)
+    for(int c = SurNum; c != NumCreatures;c++)
    {
       //make a new network
       Brainz::Basic temp;
+
+      //if survival counter reaches the amount of survived creatures, reset back to fisrt suvived creture
+      if (sc == SurNum)
+      {
+        sc = 0;
+      }
+
+      //set base network
+      nlohmann::json bn = Creatures[sc].Save();
+      sc++;
 
       //load new network with base network
       temp.Load(bn);
@@ -283,8 +296,10 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
      //set a new seed
      this->seed = (rand() % 500000000) + d;
 
+
      //get neuron from network
      Neuron* n = temp.GetNeuron(d);
+
 
       //get amount of weights in neuron
       int s2 = n->GetNumWeights();
@@ -294,6 +309,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
       //randomize that weight
      n->RandomizeWeight(this->seed, d);
+
 
       //loop through inputs
       for (int i = 0; i != inp.size();i++){
@@ -305,6 +321,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
         int r = 0;
 
+
         //loop through results and calculate error
         for (it = g.begin(); it != g.end(); it++)
         {
@@ -313,7 +330,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
           double te = qm.ABS(out[i][r] - g[it->first]);
 
           //if on first input, make new element to error array
-          if (i == 1){
+          if (i == 0){
             Errors.push_back(te);
           }else{
             Errors[c] += te;
@@ -340,6 +357,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
     }
   }
 
+
   //sort ErrorsFlippedDoublesOnly
   ErrorsFlippedDoublesOnly = Mergesort(ErrorsFlippedDoublesOnly);
 
@@ -349,9 +367,24 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   //loop through the survived creatures and add them to new creture list as survived
     for(int c = 0; c != ErrorsFlippedDoublesOnly.size() and c <= NumCreatures * SurvivalRate;c++)
     {
-      //set survived creature
-      tempC[c] = Creatures[ErrorsFlipped[ErrorsFlippedDoublesOnly[c]]];
+      //get error from best to worst
+      double er = ErrorsFlippedDoublesOnly.at(c);
+
+      //get index of creture with error
+      int index = ErrorsFlipped[index];
+
+      //get creture with index
+      auto cr = Creatures[index];
+
+      //put survived creture into envirement
+      tempC.push_back(cr);
     }
+
+    //set new creature array
+    Creatures = tempC;
+
+    //reset errors
+    Errors = {};
   }
 
   //return best network
@@ -371,6 +404,162 @@ Neuron* Brainz::Basic::GetNeuron(int num)
   return this->network[num];
 };
 
+//generate lstm
+void Brainz::LSTM::Generate()
+{
+  //Nums to neuron types
+  // 0 = Sigmoid
+  // 1 = Tanh
+  // 2 = Relu
+  // 3 = Leaky Relu 
+
+  //make temparay neuron
+  Neuron* temp = new Neuron;
+
+  //set as first neuron for manual compuation and only 1 input
+  temp->SetAsFirstNeuron(1);
+
+  //set type of neuron as sigmoid
+  temp->SetNeuronType(0);
+
+  temp->RandomizeWeight(this->seed,0);
+
+  //make copy of temp
+  Neuron *sig1 = temp;
+
+  //set sigmoid 1 neuron
+  this->network["Sig1"] = sig1;
+
+  temp->RandomizeWeight(this->seed,0);
+
+  //make copy of temp
+  Neuron *sig2 = temp;
+
+  //set sigmoid 2 neuron
+  this->network["Sig2"] = sig2;
+
+  temp->RandomizeWeight(this->seed,0);
+
+  //make copy of temp
+  Neuron *sig3 = temp;
+
+  //set sigmoid 3 neuron
+  this->network["Sig3"] = sig3;
+
+  //set type as tanh for tanh neuron
+  temp->SetNeuronType(1);
+
+
+  //make copy of temp
+  Neuron *tanh = temp;
+
+  //set tanh neurons
+  this->network["Tanh1"] = tanh;
+
+  //set tanh neurons
+  this->network["Tanh2"] = tanh;
+  
+}
+
+//run lstm network
+double Brainz::LSTM::Run(double input)
+{
+  
+  //input + previous output as a vector
+  std::vector<double> inp;
+  inp.push_back(this->output + input);
+  
+  //run sigmoids
+  this->network["Sig1"]->Compute(inp);
+
+  this->network["Sig2"]->Compute(inp);
+
+  this->network["Sig3"]->Compute(inp);
+
+  //run tanh1
+  this->network["Tanh1"]->Compute(inp);
+  
+  //get sigmoid outputs
+  double sig1 = this->network["Sig1"]->GetOutput();
+
+  double sig2 = this->network["Sig2"]->GetOutput();
+
+  double sig3 = this->network["Sig3"]->GetOutput();
+
+  //get tanh outputs
+  double tanh1 = this->network["Tanh1"]->GetOutput();
+
+  //memory gate 
+  this->memory = this->memory * sig1;
+
+  //input gate
+  double InpGate = sig2 * tanh1;
+
+  //add to memory
+  this->memory += InpGate;
+
+  //run tanh2 and get output
+  this->network["Tanh2"]->Compute({this->memory});
+
+  double tanh2 = this->network["Tanh2"]->GetOutput();
+
+  this->output = tanh2 * sig3;  
+
+  return this->output;
+}
+
+
+nlohmann::json Brainz::LSTM::Save()
+{
+  //json save var
+  nlohmann::json j;
+
+  //save sig1
+  j["Sig1"] = this->network["Sig1"]->Save();
+
+  //save sig2
+  j["Sig2"] = this->network["Sig2"]->Save();
+
+  //save sig3
+  j["Sig3"] = this->network["Sig3"]->Save();
+
+  //save tanh1
+  j["Tanh1"] = this->network["Tanh1"]->Save();
+
+  //save tanh2
+  j["Tanh2"] = this->network["Tanh2"]->Save();
+
+  return j;
+}
+
+void Brainz::LSTM::Load(nlohmann::json j)
+{
+
+  //load sig1
+  Neuron * sig1 = new Neuron;
+  sig1->Load(j["Sig1"]);
+  this->network["Sig1"] = sig1;
+
+  //load sig2
+  Neuron * sig2 = new Neuron;
+  sig2->Load(j["Sig2"]);
+  this->network["Sig2"] = sig2;
+
+  //load sig3
+  Neuron * sig3 = new Neuron;
+  sig3->Load(j["Sig3"]);
+  this->network["Sig3"] = sig3;
+
+  //load tanh1
+  Neuron * Tanh1 = new Neuron;
+  Tanh1->Load(j["Tanh1"]);
+  this->network["Tanh1"] = Tanh1;
+
+  //load tanh2
+  Neuron * Tanh2 = new Neuron;
+  Tanh2->Load(j["Tanh2"]);
+  this->network["Tanh2"] = Tanh2; 
+}
 
 
 Brainz::~Brainz(){

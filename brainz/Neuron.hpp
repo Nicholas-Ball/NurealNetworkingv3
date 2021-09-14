@@ -23,9 +23,9 @@ class Neuron{
     //input neuron names for computation
     std::vector<int> Inputs;
     //Is it an input Neuron
-    bool IsInputNeuron;
+    bool IsInputNeuron = false;
     //Is it an Output Neuron
-    bool IsOutputNeuron;
+    bool IsOutputNeuron = false;
     //neuron activation type
     int type;
     //generate random seed

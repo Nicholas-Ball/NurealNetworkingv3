@@ -48,6 +48,38 @@ class Brainz{
         ~Basic();
    }; 
 
+   class LSTM{
+     private:
+        //network array
+        std::map<std::string,Neuron *> network;
+
+        //randomizer seed
+        int seed;
+
+        //output value
+        double output;
+
+        //memory
+        double memory;
+     public:
+
+      //Generate LSTM
+      void Generate();
+
+      //Run LSTM
+      double Run(double input);
+
+      //save lstm
+      nlohmann::json Save();
+
+      //load lstm
+      void Load(nlohmann::json);
+
+      //natural selection training
+
+
+   };
+
     //Deconstructor 
     ~Brainz();
 };

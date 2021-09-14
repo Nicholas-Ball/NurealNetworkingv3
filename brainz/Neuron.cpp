@@ -38,8 +38,9 @@ void Neuron::Compute(std::vector<double> inputs)
   int type = this->GetType();
 
   //if this is the fist neuron use input data else use input from previous layer
-  if (!this->IsInputNeuron)
+  if (!(this->IsInputNeuron))
   {
+
     //loop through inputs
     for(int i = 0; i != this->Inputs.size();i++)
     {
@@ -52,14 +53,20 @@ void Neuron::Compute(std::vector<double> inputs)
   }
   else //if is input neuron, use parm input data
   {
+
     //loop through inputs
     for(int i = 0; i != inputs.size();i++)
     {
+
       //get output
       double temp = inputs[i];
 
+
+
+
       //multiply it by it's weight and add to output
       this->Output += (this->Weights[i] * temp);
+
     }
     
 
@@ -88,11 +95,11 @@ void Neuron::AddInputNeuron(int n)
 //Set neuron is in the first layer in should take an input. Also take the amount of inputs that will be passed.
 void Neuron::SetAsFirstNeuron(int num)
 {
+  this->IsInputNeuron = true;
   for (int i = 0; i != num;i++)
   {
     this->Weights.push_back(Rand(-10,20));
   };
-  this->IsInputNeuron = true;
 };
 
 //Get type of neuron
