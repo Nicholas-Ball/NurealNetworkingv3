@@ -14,7 +14,4 @@ int main()
   auto out = b.Run({3,4,1});
 
   std::cout<<out["Test1"]<<std::endl;
-
-  
-
 }
