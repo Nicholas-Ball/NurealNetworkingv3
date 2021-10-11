@@ -625,8 +625,8 @@ Brainz::LSTM::LSTM(int Seedoffset)
 {
  //set seed
  const auto p1 = std::chrono::system_clock::now();
- int unix = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
-  this->seed = unix + Seedoffset;
+ int unixs = std::chrono::duration_cast<std::chrono::nanoseconds>(p1.time_since_epoch()).count();
+  this->seed = unixs + Seedoffset;
 }
 
 
