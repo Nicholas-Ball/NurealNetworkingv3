@@ -85,7 +85,7 @@ class QMath{
     //Square Difference of two numbers derivitave
     static double SquareDifferencePrime(double Predicted, double Expected)
     {
-      return 2(Predicted-Expected);
+      return 2*(Predicted-Expected);
     }
 
 };
