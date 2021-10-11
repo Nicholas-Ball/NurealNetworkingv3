@@ -50,10 +50,25 @@ class QMath{
       return (num >= 0) * num;
     } 
 
+    //Leaky Relu derivitave
+    static double LReluPrime(double num)
+    {
+      //if x <= 0; return 0.01; 
+      double out = 0.01;
+      return out + ((num > 0.0)*0.99);
+    } 
+
+    //Relu derivitave
+    static double ReluPrime(double num)
+    {
+      // if x > 0; return 1;
+      return (num > 0);
+    } 
+
     //tanh derivitave
     static double TanhPrime(double inp)
     {
-      return (1/POW((ABS(inp)+1),2.0));
+      return 1/(POW(ABS(inp)+1,2));
     }
 
     //sigmoid derivitave
@@ -62,10 +77,15 @@ class QMath{
       return (Sigmoid(inp) * (1 - Sigmoid(inp)));
     }
 
-    //square Square Difference of two numbers
-    static SquareDifference(double Predicted, double Expected)
+    //Square Difference of two numbers
+    static double SquareDifference(double Predicted, double Expected)
     {
-      return POW((Expected-Predicted),2);
+      return POW((Predicted-Expected),2);
+    }
+    //Square Difference of two numbers derivitave
+    static double SquareDifferencePrime(double Predicted, double Expected)
+    {
+      return 2(Predicted-Expected);
     }
 
 };

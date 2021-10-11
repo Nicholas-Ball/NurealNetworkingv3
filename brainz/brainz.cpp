@@ -391,6 +391,26 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
   return Creatures[0];
 };
 
+
+//Back Propagation training
+Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment)
+{
+  //get input and set as a var
+  auto inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
+
+  //get output and set as a var
+  auto out = InputsWithExpectedOuputs["Outputs"].get<std::vector<std::vector<double>>>();
+
+  double AverageCost = 0;
+  bool first = true;
+
+  //loop though inputs and outputs for training
+  for(int i = 0;i != inp.size();i++)
+  {
+    
+  }
+}
+
 //returns size of network
 int Brainz::Basic::GetSize()
 {

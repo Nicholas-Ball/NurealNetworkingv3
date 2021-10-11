@@ -3,15 +3,18 @@
 #include <map>
 #include <cmath>
 #include <chrono>
-//#include "../brainz/brainz.hpp"
-#include "../brainz/QMath.hpp"
+#include "../brainz/brainz.hpp"
 
 int main() 
 {
-  QMath q;
+  Brainz::Basic b;
   
-  auto out = q.SigmoidPrime(0);
+  b.Generate(2,{3,2},0,3,{"Test1","Test2"});
 
-  std::cout<<out<< "\n";
+  auto out = b.Run({3,4,1});
+
+  std::cout<<out["Test1"]<<std::endl;
+
+  
 
 }

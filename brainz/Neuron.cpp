@@ -15,6 +15,13 @@ math Afuncs[4] = {
   QMath::Relu,
   QMath::LRelu,
 };
+//deriviative function array
+math Dfuncs[4] = {
+  QMath::SigmoidPrime,
+  QMath::TanhPrime,
+  QMath::ReluPrime,
+  QMath::LReluPrime,
+};
 
 
 //construct the neuron
