@@ -396,10 +396,10 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment)
 {
   //get input and set as a var
-  auto inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
+  std::vector<std::vector<double>> inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
 
   //get output and set as a var
-  auto out = InputsWithExpectedOuputs["Outputs"].get<std::vector<std::vector<double>>>();
+  std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Outputs"].get<std::vector<std::vector<double>>>();
 
   double AverageCost = 0;
   bool first = true;
@@ -407,7 +407,7 @@ Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs,int Epoche
   //loop though inputs and outputs for training
   for(int i = 0;i != inp.size();i++)
   {
-    
+    std::cout<<inp[i][0]<<std::endl;
   }
 }
 
