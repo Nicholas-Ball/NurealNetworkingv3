@@ -20,6 +20,20 @@ bool contains(std::vector<T> vec, const T & elem)
     return result;
 }
 
+std::vector<double> MapToVector(std::map<std::string,double> map)
+{
+  std::map<std::string, double>::iterator it;
+
+  std::vector<double> out;
+
+  for (it = map.begin(); it != map.end(); it++)
+  {
+    out.push_back(it->second);
+  }
+
+  return out;
+}
+
 //merge sort algorithm
 std::vector<double> Mergesort(std::vector<double> x)
 {
@@ -393,13 +407,13 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
 
 //Back Propagation training
-Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment)
+void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment)
 {
   //get input and set as a var
   std::vector<std::vector<double>> inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
 
   //get output and set as a var
-  std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Outputs"].get<std::vector<std::vector<double>>>();
+  std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Output"].get<std::vector<std::vector<double>>>();
 
   double AverageCost = 0;
   bool first = true;
@@ -407,7 +421,16 @@ Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs,int Epoche
   //loop though inputs and outputs for training
   for(int i = 0;i != inp.size();i++)
   {
-    std::cout<<inp[i][0]<<std::endl;
+    //std::cout<<this->Save()<<std::endl;
+    auto ou = this->Run({3,2,3});
+
+    auto v = MapToVector(ou);
+
+    //calculate cost
+    for(int c = 0; c != v.size();c++)
+    {
+      std::cout<<qm.SquareDifference(v[c],out[i][c])<<std::endl;
+    }
   }
 }
 

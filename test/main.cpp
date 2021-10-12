@@ -5,22 +5,37 @@
 #include <chrono>
 #include "../brainz/brainz.hpp"
 #include "../brainz/nlohmann/json.hpp"
+#include "../brainz/QMath.hpp"
 
 int main() 
 {
+  double num = 56.361;
+  int count = 0;
+
+  double nnum = num;
+  while(nnum != ((int)num))
+  {
+
+  }
+
+  std::cout<<<<std::endl;
+  std::cout << QMath::binpow(-3.3,2)<<std::endl;
   Brainz::Basic b;
   
   nlohmann::json j;
 
-  std::vector inp = {3,2,3}; 
-  std::vector out = {1,2}; 
+  std::vector<double> inp = {3,2,3}; 
+  std::vector<double> out = {1,2}; 
 
-  j["Inputs"] = {inp};
+  std::vector<std::vector<double>> outs = {out,out};
+  std::vector<std::vector<double>> inps = {inp,inp};
 
-  j["Output"] = {out};
+  j["Inputs"] = inps;
+
+  j["Output"] = outs;
 
 
   b.Generate(2,{3,2},0,3,{"Test1","Test2"});
 
-  b.BackPropagation(j);
+  b.BackPropagation(j,1);
 }

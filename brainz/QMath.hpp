@@ -77,9 +77,20 @@ class QMath{
       return (Sigmoid(inp) * (1 - Sigmoid(inp)));
     }
 
+    static long long binpow(long long a, long long b) {
+      if (b == 0)
+          return 1;
+      long long res = binpow(a, b / 2);
+      if (b % 2)
+          return res * res * a;
+      else
+          return res * res;
+    }
+
     //Square Difference of two numbers
     static double SquareDifference(double Predicted, double Expected)
     {
+      
       return POW((Predicted-Expected),2);
     }
     

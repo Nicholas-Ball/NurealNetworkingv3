@@ -38,7 +38,7 @@ class Brainz{
         Brainz::Basic NatrualSelection(Brainz::Basic BaseNetwork,int NumCreatures,int NumGenerations,double MutationChance,double SurvivalRate,nlohmann::json InputsWithExpectedOuputs);
 
         //Back Propagation training
-        Brainz::Basic BackPropagation(nlohmann::json InputsWithExpectedOuputs);
+        void BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment);
 
         //returns size of network
         int GetSize();
