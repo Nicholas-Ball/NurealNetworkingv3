@@ -6,13 +6,27 @@ class QMath{
   public:
 
     static inline double POW(double a, double b) {
+      // calculate approximation with fraction of the exponent
+      int e = (int) b;
       union {
-        double d;
-        int x[2];
-      } u = { a };
-      u.x[1] = (int)(b * (u.x[1] - 1072632447) + 1072632447);
+      double d;
+      int x[2];
+     } u = { a };
+      u.x[1] = (int)((b - e) * (u.x[1] - 1072632447) + 1072632447);
       u.x[0] = 0;
-      return u.d;
+
+      // exponentiation by squaring with the exponent's integer part
+      // double r = u.d makes everything much slower, not sure why
+      double r = 1.0;
+      while (e) {
+        if (e & 1) {
+          r *= a;
+        }
+        a *= a;
+        e >>= 1;
+      }
+
+      return r * u.d;
     }
 
     //Absoulte value math
@@ -77,20 +91,9 @@ class QMath{
       return (Sigmoid(inp) * (1 - Sigmoid(inp)));
     }
 
-    static long long binpow(long long a, long long b) {
-      if (b == 0)
-          return 1;
-      long long res = binpow(a, b / 2);
-      if (b % 2)
-          return res * res * a;
-      else
-          return res * res;
-    }
-
     //Square Difference of two numbers
     static double SquareDifference(double Predicted, double Expected)
     {
-      
       return POW((Predicted-Expected),2);
     }
     

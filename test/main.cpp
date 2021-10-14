@@ -9,17 +9,7 @@
 
 int main() 
 {
-  double num = 56.361;
-  int count = 0;
-
-  double nnum = num;
-  while(nnum != ((int)num))
-  {
-
-  }
-
-  std::cout<<<<std::endl;
-  std::cout << QMath::binpow(-3.3,2)<<std::endl;
+  std::cout << QMath::POW(-3.3,2)<<std::endl;
   Brainz::Basic b;
   
   nlohmann::json j;
