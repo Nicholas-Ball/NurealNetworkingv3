@@ -429,7 +429,7 @@ void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs,int 
     //calculate cost
     for(int c = 0; c != v.size();c++)
     {
-      std::cout<<qm.SquareDifference(v[c],out[i][c])<<std::endl;
+      std::cout<<"Cost: "<<qm.SquareDifference(v[c],out[i][c])<<std::endl;
     }
   }
 }

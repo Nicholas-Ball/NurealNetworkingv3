@@ -2,10 +2,20 @@
 #define MOD 1000000007
 #define E 2.71828
 
+
+
 class QMath{
+  private:
+    //exponent if the number is negitive (AKA root of a number)
+    static inline double nPOW(double a, double b)
+    {
+      return  a / POW(a,(b*-1)+1);
+    }
   public:
 
+    //exponent
     static inline double POW(double a, double b) {
+      if(b < 0) return nPOW(a,b);
       // calculate approximation with fraction of the exponent
       int e = (int) b;
       union {

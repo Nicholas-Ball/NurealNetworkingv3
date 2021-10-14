@@ -15,7 +15,7 @@ int main()
   nlohmann::json j;
 
   std::vector<double> inp = {3,2,3}; 
-  std::vector<double> out = {1,2}; 
+  std::vector<double> out = {1,20}; 
 
   std::vector<std::vector<double>> outs = {out,out};
   std::vector<std::vector<double>> inps = {inp,inp};
