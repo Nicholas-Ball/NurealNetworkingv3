@@ -13,12 +13,13 @@ int main()
   int count = 0;
 
   double nnum = num;
-  while(nnum != ((int)num))
+  while(nnum != ((int)nnum))
   {
-
+    nnum *= 10;
+    count++;
   }
 
-  std::cout<<<<std::endl;
+  std::cout<<count<<std::endl;
   std::cout << QMath::binpow(-3.3,2)<<std::endl;
   Brainz::Basic b;
   
