@@ -25,6 +25,6 @@ int main()
 
 
   b.Generate(2,{3,2},0,3,{"Test1","Test2"});
-
-  b.BackPropagation(j,1);
+	while(true)
+  	b.BackPropagation(j,0.05);
 }

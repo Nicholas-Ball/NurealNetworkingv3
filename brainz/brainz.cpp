@@ -105,10 +105,10 @@ while (m1x != m1.size() or m2x != m2.size()){
 
 };
 
-
 //Generate network and save to self
 void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type,int numberofinputs,std::vector<std::string> OutputNames)
 {
+	this->Columns = Columns;
   //Set outputnames vector array
   this->names = OutputNames;
   //loop through columns and make a neurons
@@ -129,6 +129,7 @@ void Brainz::Basic::Generate(int Columns, std::vector<int> ColumnMatrix,int type
         n->SetAsFirstNeuron(numberofinputs);
       }else{
         //if not on first column, use previous column as input
+
 
         //get current size of network
         int s = this->network.size();
@@ -407,7 +408,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
 
 //Back Propagation training
-void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment)
+void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs, double LearningRate)
 {
   //get input and set as a var
   std::vector<std::vector<double>> inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
@@ -415,22 +416,66 @@ void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs,int 
   //get output and set as a var
   std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Output"].get<std::vector<std::vector<double>>>();
 
-  double AverageCost = 0;
-  bool first = true;
-
   //loop though inputs and outputs for training
   for(int i = 0;i != inp.size();i++)
   {
-    //std::cout<<this->Save()<<std::endl;
-    auto ou = this->Run({3,2,3});
+    auto ou = this->Run(inp[i]);
 
     auto v = MapToVector(ou);
 
-    //calculate cost
+    //calculate cost of network
     for(int c = 0; c != v.size();c++)
     {
-      std::cout<<"Cost: "<<qm.SquareDifference(v[c],out[i][c])<<std::endl;
+			//calaculate total cost
+      this->cost += qm.SquareDifference(v[c],out[i][c]);
+
+			//cost of the output
+			this->network[this->network.size()-(v.size()-c)-1]->SetError(-1*(v[c]-out[i][c]));
     }
+
+		//calaculate error of each neuron
+		//skip last neurons (already calculated)
+		for(int c = this->network.size()-1; c != -1;c--)
+		{
+			//loop through inputs of each neuron and
+			//calculate error of it
+			for(int i = 0; i != this->network[c]->Inputs.size(); i++)
+			{
+				//get input neuron number
+				int num = this->network[c]->Inputs[i];
+
+				//previous error * previous derivative = e1
+				this->network[num]->Error += this->network[c]->Error * this->network[c]->GetDerivative();
+			}
+		}
+
+
+		//calculate deltas of network starting from last
+		//neuron
+		for(int n = this->network.size()-1; n != -1;n--)
+		{
+			double err = this->network[n]->GetError();
+			std::cout<<err<<std::endl;
+
+			//output * err * derivative = delta
+			this->network[n]->delta = this->network[n]->GetOutput() * err * this->network[n]->GetDerivative();
+		}
+
+		//update weights of each neuron
+		for(int n = 0; n != this->network.size();n++)
+		{
+
+			//output * err * derivative = delta
+			double delta = this->network[n]->GetOutput() * this->network[n]->GetError() * this->network[n]->GetDerivative();
+
+			//loop through weight of neuron
+			for(int w = 0; w != this->network[n]->Weights.size();w++)
+			{
+					//new weight = weight - (LearningRate * delta)
+					this->network[n]->Weights[w] -= LearningRate * delta; 
+			}
+		}
+
   }
 }
 

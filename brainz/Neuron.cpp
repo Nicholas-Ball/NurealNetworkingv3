@@ -54,6 +54,9 @@ void Neuron::Compute(std::vector<double> inputs)
       //get output of pervious neuron with neuron number  
       double n = this->NetworkPointer[this->Inputs[i]-1]->GetOutput();
 
+			//add input to input array for backpropgation
+			this->InputNum.push_back(n);
+
       //multiply it by it's weight and add to output
       this->Output += (this->Weights[i] * n);
     }
@@ -65,11 +68,11 @@ void Neuron::Compute(std::vector<double> inputs)
     for(int i = 0; i != inputs.size();i++)
     {
 
-      //get output
+      //get input data
       double temp = inputs[i];
 
-
-
+			//add input to input array for backpropgation
+			this->InputNum.push_back(temp);
 
       //multiply it by it's weight and add to output
       this->Output += (this->Weights[i] * temp);
@@ -79,9 +82,17 @@ void Neuron::Compute(std::vector<double> inputs)
 
   }
 
+	this->BeforeAFunc = (this->Output + this->Bias);
+
   //add bias,Compute neuron, and set as output
-  this->Output = Afuncs[type](this->Output + this->Bias);
+  this->Output = Afuncs[type](this->BeforeAFunc);
 };
+
+//calulate derivative
+double Neuron::GetDerivative()
+{
+	return Dfuncs[this->type](this->BeforeAFunc);
+}
 
 //Add Neuron to neurons to use in computation and make random weights
 void Neuron::AddInputNeuron(int n)
@@ -150,6 +161,24 @@ void Neuron::SetPointer(std::vector<Neuron*> net)
 {
   this->NetworkPointer = net;
 };
+
+//set error of neuron
+void Neuron::SetError(double err)
+{
+	this->Error = err;
+}
+
+//get input of neuron
+std::vector<double> Neuron::GetInput()
+{
+	return this->InputNum;
+}
+
+//Error accesor
+double Neuron::GetError()
+{
+	return this->Error;
+}
 
 //save neuron
 nlohmann::json Neuron::Save()

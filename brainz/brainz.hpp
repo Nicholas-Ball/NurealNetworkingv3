@@ -21,7 +21,12 @@ class Brainz{
 
         //randomizer seed
         int seed;
+
+				//cost of network
+				double cost;
       public:
+				//number of Columns
+				int Columns;
         //Generate network and save to self
         void Generate(int Columns, std::vector<int> ColumnMatrix,int type,int numberofinputs,std::vector<std::string> OutputNames);
 
@@ -38,7 +43,7 @@ class Brainz{
         Brainz::Basic NatrualSelection(Brainz::Basic BaseNetwork,int NumCreatures,int NumGenerations,double MutationChance,double SurvivalRate,nlohmann::json InputsWithExpectedOuputs);
 
         //Back Propagation training
-        void BackPropagation(nlohmann::json InputsWithExpectedOuputs,int EpochesTillAdjustment);
+        void BackPropagation(nlohmann::json InputsWithExpectedOuputs,double LearningRate);
 
         //returns size of network
         int GetSize();

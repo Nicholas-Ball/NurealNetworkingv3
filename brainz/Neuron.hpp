@@ -14,32 +14,47 @@ class Neuron{
     std::string name;
     //Output var
     double Output;
-    //error var
-    double Error;
     //bias number var
     double Bias;
-    //weights
-    std::vector<double> Weights;
-    //input neuron names for computation
-    std::vector<int> Inputs;
-    //Is it an input Neuron
-    bool IsInputNeuron = false;
-    //Is it an Output Neuron
-    bool IsOutputNeuron = false;
     //neuron activation type
     int type;
     //generate random seed
     double seed = 0;
     //pointer to network
     std::vector<Neuron*> NetworkPointer;
+		//input numbers
+		std::vector<double> InputNum;
+		//number before activation function
+		double BeforeAFunc;
 
 
   public:
+    //weights
+    std::vector<double> Weights;
+
+    //error var
+    double Error;
+
+    //Is it an input Neuron
+    bool IsInputNeuron = false;
+
+    //Is it an Output Neuron
+    bool IsOutputNeuron = false;
+
+    //input neuron names for computation
+    std::vector<int> Inputs;
+
+		//neruon's delta
+		double delta;
+
     //Constructor
     Neuron();
 
     //Compute data for the neuron
     void Compute(std::vector<double> inputs);
+
+		//calulate the derivatie of the function
+		double GetDerivative();
 
     //Add Neuron index to neuron to use in computation
     void AddInputNeuron(int n);
@@ -62,8 +77,14 @@ class Neuron{
     //set network pointer
     void SetPointer(std::vector<Neuron*> net);
 
+		//set error of neuron
+		void SetError(double err);
+
     //set name of neuron
     void SetName(std::string name);
+
+		//get inputs of neuron
+		std::vector<double> GetInput();
 
     //Save neuron as json and return that data
     nlohmann::json Save();
@@ -82,6 +103,9 @@ class Neuron{
 
     //get number of weights in neuron
     int GetNumWeights();
+
+		//Error accessor
+		double GetError();
 
     void RandomizeBias(int seed);
 

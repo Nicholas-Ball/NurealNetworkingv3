@@ -104,13 +104,13 @@ class QMath{
     //Square Difference of two numbers
     static double SquareDifference(double Predicted, double Expected)
     {
-      return POW((Predicted-Expected),2);
+      return 0.5 * POW((Predicted-Expected),2);
     }
     
     //Square Difference of two numbers derivitave
     static double SquareDifferencePrime(double Predicted, double Expected)
     {
-      return 2*(Predicted-Expected);
+      return (Predicted-Expected);
     }
 
 };
