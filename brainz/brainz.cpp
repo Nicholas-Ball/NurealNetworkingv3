@@ -308,6 +308,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
       //get random number within the size of the network
      int d = rand() % (s-1);
 
+
      //set a new seed
      this->seed = (rand() % 500000000) + d;
 
@@ -324,6 +325,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
 
       //randomize that weight
      n->RandomizeWeight(this->seed, d);
+    
 
 
       //loop through inputs
@@ -401,6 +403,7 @@ Brainz::Basic Brainz::Basic::NatrualSelection(Brainz::Basic BaseNetwork,int NumC
     //reset errors
     Errors = {};
   }
+  
 
   //return best network
   return Creatures[0];
@@ -414,7 +417,7 @@ void Brainz::Basic::BackPropagation(nlohmann::json InputsWithExpectedOuputs, dou
   std::vector<std::vector<double>> inp = InputsWithExpectedOuputs["Inputs"].get<std::vector<std::vector<double>>>();
 
   //get output and set as a var
-  std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Output"].get<std::vector<std::vector<double>>>();
+  std::vector<std::vector<double>> out = InputsWithExpectedOuputs["Outputs"].get<std::vector<std::vector<double>>>();
 
   //loop though inputs and outputs for training
   for(int i = 0;i != inp.size();i++)
